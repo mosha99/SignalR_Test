@@ -7,8 +7,9 @@ using SignalR_Test.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSignalR();
-//builder.Services.AddSignalR().AddStackExchangeRedis("");
+builder.Services.AddSignalR()
+//.AddStackExchangeRedis("")
+;
 
 builder.Services.AddDbContext<MyContext>();
 

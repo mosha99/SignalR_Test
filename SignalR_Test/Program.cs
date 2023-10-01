@@ -8,6 +8,7 @@ using SignalR_Test.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR();
+//builder.Services.AddSignalR().AddStackExchangeRedis("");
 
 builder.Services.AddDbContext<MyContext>();
 
@@ -24,7 +25,6 @@ builder =>
 
 var app = builder.Build();
 
-//app.UseCors(o => o.AllowAnyOrigin());
 app.UseCors("CorsPolicy");
 
 app.MapHub<TestHub>("/Hub");

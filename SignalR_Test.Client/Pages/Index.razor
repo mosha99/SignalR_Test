@@ -1,0 +1,135 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+@if (logined)
+{
+    <div class="form-group">
+        <label>
+            serch:
+            <input @bind="serched" />
+        </label>
+        <button @onclick="Serch" disabled="@(!IsConnected)">Serch</button>
+
+    </div>
+    <div class="form-group">
+        <label>
+            ReceiverName:
+            <select @onchange="(x) => Receiver = x.Value.ToString()">
+
+                @foreach (var item in SerchResult)
+                {
+                    <option value="@item">@item</option>
+                }
+
+            </select>
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+
+
+
+
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+}
+else
+{
+    <div class="form-group">
+        <label>
+            User:
+            <input @bind="userInput" />
+        </label>
+    </div>
+    <button @onclick="Login" disabled="@(!IsConnected)">Login</button>
+
+}
+
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+@code {
+
+    private string UserName = null;
+
+    private bool logined => UserName is not null;
+
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
+    private string? Receiver;
+    private string serched;
+    private List<string> SerchResult = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("http://localhost:5032/Hub")
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (name, message) =>
+        {
+            var encodedMsg = $"{name} ---> {message}";
+            messages.Add(encodedMsg);
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<List<string>>("SerchResult", (list) =>
+        {
+            SerchResult = list;
+            InvokeAsync(StateHasChanged);
+        });
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Serch()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SerchUser", serched);
+        }
+    }
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", Receiver, messageInput);
+            var encodedMsg = $" {Receiver} <--- {messageInput}";
+            messages.Add(encodedMsg);
+            InvokeAsync(StateHasChanged);
+        }
+    }
+    private async Task Login()
+    {
+        if (hubConnection is not null && !string.IsNullOrWhiteSpace(userInput))
+        {
+            await hubConnection.SendAsync("InitUser", userInput);
+            UserName = userInput;
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

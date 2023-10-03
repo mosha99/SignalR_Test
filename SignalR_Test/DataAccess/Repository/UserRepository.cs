@@ -8,6 +8,13 @@ public class UserRepository : IUserRepository
 {
     public MyContext Db { get; }
 
+    static UserRepository()
+    {
+        InstansGuid = Guid.NewGuid();
+    }
+
+    public static Guid InstansGuid ;
+
     public UserRepository(MyContext Db)
     {
         Db.Database.EnsureCreated();
@@ -24,7 +31,7 @@ public class UserRepository : IUserRepository
     {
         if (await Db.Users.AnyAsync(x => x.Name == UserName)) throw new Exception("User Exist");
 
-        await Db.AddAsync(new User(ConnectionId, UserName));
+        await Db.AddAsync(new User(ConnectionId, UserName,InstansGuid));
 
         await Db.SaveChangesAsync();
     }

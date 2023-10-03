@@ -11,6 +11,7 @@ public class TestHub : Hub
     public TestHub(IUserRepository repository)
     {
         _repository = repository;
+        Console.WriteLine("ctor");
     }
 
     public async Task InitUser(string UserName)
@@ -20,6 +21,8 @@ public class TestHub : Hub
 
     public async Task SendMessage(string ResiverName, string Message)
     {
+        Console.WriteLine($"send {Message} to {ResiverName}");
+
         string connectionId = await _repository.GetConnectionId(ResiverName);
 
         string name = await _repository.GetUserName(Context.ConnectionId);

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR_Test", "SignalR_Test\SignalR_Test.csproj", "{51AB1BB6-3D36-4864-BA45-6FB71FCE0FAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalR_Test", "SignalR_Test\SignalR_Test.csproj", "{51AB1BB6-3D36-4864-BA45-6FB71FCE0FAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR_Test.Client", "SignalR_Test.Client\SignalR_Test.Client.csproj", "{DE6B4CC5-F8B7-463E-BC75-4EF4812909F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalR_Test.Client", "SignalR_Test.Client\SignalR_Test.Client.csproj", "{DE6B4CC5-F8B7-463E-BC75-4EF4812909F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
